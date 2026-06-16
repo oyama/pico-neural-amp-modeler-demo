@@ -118,11 +118,12 @@ second core's slack and the clock headroom for the audio path.
 
 ## Engine changes (forked, additive, minimal)
 The RP2350 changes to NeuralAmpModelerCore are additive (`process()` is untouched) and live in a
-fork; the useful pieces are being offered upstream:
+[fork](https://github.com/oyama/NeuralAmpModelerCore/tree/add-rp2350-support):
 
 - a2_fast layer-partition API (`NAM/wavenet/a2_fast.{h,cpp}`): process a layer range `[K0,K1)` with
   externally supplied residual, head-sum, and cond buffers, with head accumulation decoupled, so
   the WaveNet stack can be split across cores bit-exactly.
+  [Proposed upstream.](https://github.com/sdatkinson/NeuralAmpModelerCore/issues/291)
 - Bare-metal portability (`NAM/wavenet/slimmable.{h,cpp}`): a `NAM_SHARED_PTR_ATOMIC_FREE_FUNCS`
   path so the engine compiles without `std::atomic<std::shared_ptr<>>`, which the bare-metal
   toolchain lacks.
@@ -138,4 +139,4 @@ The 31k figure was the engine on the generic Eigen GEMM path, which is wrong for
 Switching to the `a2_fast` path it already ships brings it to 8,396 cycles per sample (3.7x), and
 splitting the layer stack across both M33 cores, the main work this project adds, reaches 4,533
 cycles per sample (6.85x overall, 73% CPU at 300 MHz). A production NAM A2-Lite tone runs in real
-time on a dual-core Cortex-M33 with no overclock.
+time on a dual-core Cortex-M33 at a stable 300 MHz / 1.20 V, without the unstable 400 MHz overclock.

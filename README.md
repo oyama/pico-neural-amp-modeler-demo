@@ -32,7 +32,8 @@ The engine already ships a purpose-built fast path for the fixed A2 shape, `a2_f
 compile-time unrolled and uses no general GEMM. Switching to it drops the cost to 8,396 cycles, a
 3.7x improvement. Splitting the layer stack across both M33 cores, which is the main work this
 project adds, brings another 1.85x for a final 4,533 cycles. That is 6.85x overall, enough to run
-in real time on two cores at 300 MHz with no 400 MHz overclock. The split produces bit-exact
+in real time on two cores at 300 MHz (2× the 150 MHz default, at 1.20 V core), without the
+unstable 400 MHz overclock. The split produces bit-exact
 output compared to a single core, and `a2_fast` is data-independent, so the per-sample cost is the
 same for any A2-Lite capture.
 
@@ -63,7 +64,10 @@ are in [RESULTS.md](RESULTS.md).
 
 ## Build & run
 
-This project uses the [pico-sdk](https://github.com/raspberrypi/pico-sdk).
+Prebuilt firmware is on the [latest release](https://github.com/oyama/pico-neural-amp-modeler-demo/releases/latest):
+download `pico-nam-*.uf2` and drag it onto the RP2350 in BOOTSEL mode, then skip to selecting "Pico NAM" below.
+
+To build from source, this project uses the [pico-sdk](https://github.com/raspberrypi/pico-sdk).
 Refer to the official guide, [Getting Started with Raspberry Pi Pico](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf), to set up your development environment.
 
 ```bash
@@ -83,11 +87,10 @@ full walkthrough (toolchain setup, per-OS monitoring, embedding your own
 
 The network runs on [NeuralAmpModelerCore](https://github.com/sdatkinson/NeuralAmpModelerCore).
 This project's engine changes are additive and minimal (`process()` is untouched) and live in a
-[fork](https://github.com/oyama/NeuralAmpModelerCore/tree/add-rp2350-support); the useful pieces
-are being offered upstream as PRs:
+[fork](https://github.com/oyama/NeuralAmpModelerCore/tree/add-rp2350-support):
 
 - a layer-partition API on the `a2_fast` path so the WaveNet stack can be split across cores
-  (bit-exact against a single core);
+  (bit-exact against a single core), [proposed upstream](https://github.com/sdatkinson/NeuralAmpModelerCore/issues/291);
 - a bare-metal portability flag (`NAM_SHARED_PTR_ATOMIC_FREE_FUNCS`) so the engine compiles
   without `std::atomic<std::shared_ptr<>>`.
 

@@ -134,8 +134,7 @@ static void button_task(void) {
 }
 
 int main(void) {
-    // 300 MHz gives the dual-core pipeline headroom (period ~0.72 ms/block) so
-    // core0 has time for tud_task between blocks. clk_usb stays on pll_usb.
+    // Overclock to 300 MHz (2x the 150 MHz default) for dual-core pipeline headroom.
     vreg_set_voltage(VREG_VOLTAGE_1_20);
     sleep_ms(10);
     set_sys_clock_khz(300000, true);

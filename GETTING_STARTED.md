@@ -4,6 +4,13 @@ Build the firmware, hear it through a USB-audio loopback, swap in your own tone,
 benchmark. For the background (the dual-core port, the numbers), see the [README](README.md) and
 [`RESULTS.md`](RESULTS.md).
 
+## Quick start: flash the prebuilt firmware
+
+If you just want to hear it, download the latest `pico-nam-*.uf2` from
+[Releases](https://github.com/oyama/pico-neural-amp-modeler-demo/releases/latest), hold BOOTSEL
+while plugging in the board, and copy the `.uf2` onto the `RP2350` mass-storage volume. Then jump
+to [Run it](#run-it--hearing-the-loopback). To build from source or embed your own tone, read on.
+
 ## Requirements
 
 - A **Raspberry Pi Pico 2** or any RP2350 board.
@@ -16,7 +23,7 @@ benchmark. For the background (the dual-core port, the numbers), see the [README
 ## Build & flash
 
 ```bash
-git clone --recurse-submodules <this repo>
+git clone --recurse-submodules https://github.com/oyama/pico-neural-amp-modeler-demo.git
 cd pico-neural-amp-modeler-demo
 export PICO_SDK_PATH=/path/to/pico-sdk
 # (if your toolchain isn't on PATH) export PICO_TOOLCHAIN_PATH=/path/to/arm-none-eabi
